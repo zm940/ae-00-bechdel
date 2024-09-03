@@ -290,6 +290,17 @@ Expand on your plot from the previous step by using `facet_grid` to display the 
 #| label: plot-facet-grid
 
 # add code here
+ggplot(bechdel, 
+       aes(x = budget_2013, y = gross_2013, color = binary, size = roi)) +
+  geom_point(alpha = 0.5) + 
+  labs(
+    x = "Budget (in 2013 dollars)", 
+    y = "Gross revenue (in 2013 dollars)", 
+    title = "Budget vs. gross revenue, by Bechdel test"
+    ) +
+  facet_grid(rows = vars(clean_test), cols = vars(binary)) +
+  scale_x_continuous(labels = label_dollar(scale_cut = cut_short_scale())) +
+  scale_y_continuous(labels = label_dollar(scale_cut = cut_short_scale()))
 ```
 
 Add comment here...
@@ -316,9 +327,24 @@ Create side-by-side box plots of `roi` by `clean_test` where the boxes are color
 #| label: roi-zoom
 
 # add code here
+bechdel |>
+  filter(roi > 400) |>
+  select(title, roi, budget_2013, gross_2013, year, clean_test)
+
+ggplot(bechdel, 
+       aes(x = clean_test, y = roi, color = binary)) +
+  geom_boxplot() +
+  labs(
+    title = "Return on investment vs. Bechdel test result",
+    x = "Bechdel result",
+    y = "ROI",
+    color = "Bechdel\nresult"
+    )
 ```
 
 What are those movies with *very* high returns on investment?
+
+Paranormal Activity, The Blair Witch Project, El Mariachi.
 
 ```{r}
 bechdel |>
@@ -334,6 +360,19 @@ Expand on your plot from the previous step to zoom in on movies with `roi < ___`
 #| label: roi-test-zoom
 
 # add code here
+
+ggplot(bechdel, 
+       aes(x = clean_test, y = roi, color = binary)) +
+  geom_boxplot() +
+  labs(
+    title = "Return on investment vs. Bechdel test result",
+    x = "Bechdel result",
+    y = "ROI",
+    color = "Bechdel\nresult"
+    ) +
+  coord_cartesian(ylim = c(0, 20))
 ```
 
 What does this plot say about return-on-investment on movies that pass the Bechdel test?
+
+Movies that pass the Bechel test usually have a higher ROI.
